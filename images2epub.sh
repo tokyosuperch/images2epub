@@ -30,6 +30,7 @@ for pathfile in `ls ./input`; do
     standard=$(echo "$standard" | sed \
     -e "s/<!--xhtml+xml-->/<item media-type=\"application\/xhtml+xml\" id=\"$pathfile\" href=\"xhtml\/$pathfile.xhtml\"\/>\n<!--xhtml+xml-->/g" \
     -e "s/<!--itemref-->/<itemref idref=\"$pathfile\" \/>\n<!--itemref-->/g")
+    echo "$pathfile added."
 done
 echo "$standard" > "temporary/$title/ebook/item/standard.opf"
 cd "./temporary/$title/"
