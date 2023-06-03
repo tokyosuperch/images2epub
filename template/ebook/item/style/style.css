@@ -1,0 +1,13 @@
+body {
+    -ms-writing-mode: tb-rl;
+    writing-mode: vertical-rl;
+    height: 100%;
+    margin: 0;
+}
+p {
+    margin: 0;
+    page-break-after: always;
+}
+img {
+    height: 100%;
+}
