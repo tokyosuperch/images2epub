@@ -1,4 +1,10 @@
 #!/bin/sh
+
+# For Unix Systems
+identify=identify
+# For Windows Git Bash
+# identify="magick identify"
+
 title=$1
 author=$2
 mkdir "temporary/$title"
@@ -13,17 +19,10 @@ for pathfile in `ls ./input`; do
     page=$(echo "$pagetemp" | sed \
     -e "s/<!--imagepath-->/..\/images\/$pathfile/g" \
     -e "s/<!--title-->/$title/g")
-    fileinfo=$(file "temporary/$title/ebook/item/images/$pathfile")
-    filetype=$(echo $fileinfo | awk -F'[:,]' '{print $2}')
-    if [ "$filetype" = " JPEG image data" ]; then
-        resolution=$(echo $fileinfo | awk -F'[:,]' '{print $9}')
-        width=$(echo $resolution | awk -F'[ x]' '{print $1}')
-        height=$(echo $resolution | awk -F'[ x]' '{print $2}')
-        page=$(echo "$page" | sed -e "s/<!--viewport-->/<meta name=\"viewport\" content=\"width=$width, height=$height\" \/>/g")
-    elif [ "$filetype" = " PNG image data" ]; then
-        resolution=$(echo $fileinfo | awk -F'[:,]' '{print $3}')
-        width=$(echo $resolution | awk -F'[ x]' '{print $1}')
-        height=$(echo $resolution | awk -F'[ x]' '{print $4}')
+    resolution=$($identify -format '%w,%h' "temporary/$title/ebook/item/images/$pathfile")
+    width=$(echo $resolution | awk -F'[,]' '{print $1}')
+    height=$(echo $resolution | awk -F'[,]' '{print $2}')
+    if [ "$width" != '' ] && [ "$height" != '' ]; then
         page=$(echo "$page" | sed -e "s/<!--viewport-->/<meta name=\"viewport\" content=\"width=$width, height=$height\" \/>/g")
     fi
     echo "$page" > "temporary/$title/ebook/item/xhtml/$pathfile.xhtml"
